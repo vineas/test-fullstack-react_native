@@ -1,132 +1,268 @@
-import { Image, StyleSheet, Platform, Text, View, SafeAreaView, TextInput, Button, Alert, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { View, Text, TextInput, Button, Modal, StyleSheet, ScrollView } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 
+
 export default function HomeScreen() {
-  const [value, setValue] = useState(null);
-  const [isFocus, setIsFocus] = useState(false);
-  const [text, onChangeText] = React.useState('');
-  const [number, onChangeNumber] = React.useState('');
-  const [tipeSekolah, onTipeSekolah] = React.useState('');
-  const [namaSekolah, onSekolah] = React.useState('');
-  const [alamat, onAlamat] = React.useState('');
-
-
-  const data = [
-    { label: 'Negeri', value: '1' },
-    { label: 'Swasta', value: '2' }
+  const [name, setName] = useState('');
+  const [address, setAddress] = useState('');
+  const [kodePos, setKodePos] = useState('');
+  const [jenisSekolah, setJenisSekolah] = useState(null);
+  const [provinsi, setProvinsi] = useState(null);
+  const [noTelp, setNoTelp] = useState('');
+  const [emailSekolah, setEmailSekolah] = useState('');
+  const [facebook, setFacebook] = useState('');
+  const [jumlahSiswa, setJumlahSiswa] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const tipeSekolah = [
+    { label: 'Negeri', value: 'Negeri' },
+    { label: 'Swasta', value: 'Swasta' }
   ];
 
+  const handleKodePos = (text) => {
+    const numericText = text.replace(/[^0-9]/g, '');
+    setKodePos(numericText);
+  };
 
-  const renderLabel = () => {
-    if (value || isFocus) {
-      return (
-        <Text style={[styles.label, isFocus && { color: 'blue' }]}>
-          Tipe Sekolah: *
-        </Text>
-      );
+  const provinsiIndonesia = [
+    { label: 'Aceh', value: 'Aceh' },
+    { label: 'Sumatera Utara', value: 'Sumatera Utara' },
+    { label: 'Sumatera Barat', value: 'Sumatera Barat' },
+    { label: 'Riau', value: 'Riau' },
+    { label: 'Kepulauan Riau', value: 'Kepulauan Riau' },
+    { label: 'Jambi', value: 'Jambi' },
+    { label: 'Sumatera Selatan', value: 'Sumatera Selatan' },
+    { label: 'Bangka Belitung', value: 'Bangka Belitung' },
+    { label: 'Bengkulu', value: 'Bengkulu' },
+    { label: 'Lampung', value: 'Lampung' },
+    { label: 'DKI Jakarta', value: 'DKI Jakarta' },
+    { label: 'Jawa Barat', value: 'Jawa Barat' },
+    { label: 'Banten', value: 'Banten' },
+    { label: 'Jawa Tengah', value: 'Jawa Tengah' },
+    { label: 'DI Yogyakarta', value: 'DI Yogyakarta' },
+    { label: 'Jawa Timur', value: 'Jawa Timur' },
+    { label: 'Bali', value: 'Bali' },
+    { label: 'Nusa Tenggara Barat', value: 'Nusa Tenggara Barat' },
+    { label: 'Nusa Tenggara Timur', value: 'Nusa Tenggara Timur' },
+    { label: 'Kalimantan Barat', value: 'Kalimantan Barat' },
+    { label: 'Kalimantan Tengah', value: 'Kalimantan Tengah' },
+    { label: 'Kalimantan Selatan', value: 'Kalimantan Selatan' },
+    { label: 'Kalimantan Timur', value: 'Kalimantan Timur' },
+    { label: 'Kalimantan Utara', value: 'Kalimantan Utara' },
+    { label: 'Sulawesi Utara', value: 'Sulawesi Utara' },
+    { label: 'Gorontalo', value: 'Gorontalo' },
+    { label: 'Sulawesi Tengah', value: 'Sulawesi Tengah' },
+    { label: 'Sulawesi Barat', value: 'Sulawesi Barat' },
+    { label: 'Sulawesi Selatan', value: 'Sulawesi Selatan' },
+    { label: 'Sulawesi Tenggara', value: 'Sulawesi Tenggara' },
+    { label: 'Maluku', value: 'Maluku' },
+    { label: 'Maluku Utara', value: 'Maluku Utara' },
+    { label: 'Papua Barat', value: 'Papua Barat' },
+    { label: 'Papua', value: 'Papua' },
+    { label: 'Papua Tengah', value: 'Papua Tengah' },
+    { label: 'Papua Pegunungan', value: 'Papua Pegunungan' },
+    { label: 'Papua Selatan', value: 'Papua Selatan' }
+  ];
+
+  const handleNoTelp = (text) => {
+    const numericText = text.replace(/[^0-9]/g, '');
+    setNoTelp(numericText);
+  };
+
+  const handleJumlahSiswa = (text) => {
+    const numericText = text.replace(/[^0-9]/g, '');
+    const numericValue = parseInt(numericText, 10);
+    if (numericValue >= 1 && numericValue <= 100) {
+      setJumlahSiswa(numericText);
+    } else if (numericValue < 1) {
+      setJumlahSiswa('1');
+    } else if (numericValue > 100) {
+      setJumlahSiswa('100');
+    } else {
+      setJumlahSiswa('');
     }
-    return null;
+
+  };
+
+
+  const [isFocus, setIsFocus] = useState(false);
+  const handleSubmit = () => {
+    setModalVisible(true);
   };
 
   return (
-    <SafeAreaView style={styles.stepContainer}>
-      <View style={styles.container}>
-        {renderLabel()}
-        <Dropdown
-          style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-          iconStyle={styles.iconStyle}
-          data={data}
-          maxHeight={300}
-          labelField="label"
-          valueField="value"
-          placeholder={!isFocus ? 'Tipe Sekolah: *' : '...'}
-          value={value}
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
-          onChange={item => {
-            setValue(value);
-            setIsFocus(false);
-          }}
-        />
-      </View>
-      <Text style={styles.text}>Nama Sekolah: *</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        placeholder="Contoh: SMK Negeri 1 Bandung (untuk negeri)"
-        value={text}
-      />
-      <Text style={styles.text}>Alamat: *</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        value={text}
-      />
-      <Text style={styles.text}>Kode Pos: *</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeNumber}
-        value={number}
-        keyboardType="numeric"
-      />
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.button} onPress={() => Alert.alert('Cannot press this one')}>
-          <Text style={styles.buttonText}>Submit</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+    <ScrollView contentContainerStyle={styles.scrollView}>
+      <Text style={styles.titleForm}>Data Sekolah: </Text>
 
+      <Dropdown
+        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        iconStyle={styles.iconStyle}
+        data={tipeSekolah}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? 'Tipe Sekolah: *' : '...'}
+        value={jenisSekolah}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={item => {
+          setJenisSekolah(item.value);
+          setIsFocus(false);
+        }}
+      />
+
+      <Text style={styles.label}>Nama Sekolah: *</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={setName}
+        value={name}
+        placeholder="SMAN 3 Klaten"
+      />
+
+      <Text style={styles.label}>Masukkan Alamat: *</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={setAddress}
+        value={address}
+        placeholder="Jl. Beruang"
+      />
+
+      <Text style={styles.label}>Kode Pos:</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={handleKodePos}
+        value={kodePos}
+        placeholder="17565"
+        keyboardType="numeric"
+        maxLength={5}
+      />
+
+      <Text style={styles.label}>Provinsi: *</Text>
+      <Dropdown
+        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+        placeholderStyle={styles.placeholderStyle}
+        selectedTextStyle={styles.selectedTextStyle}
+        iconStyle={styles.iconStyle}
+        data={provinsiIndonesia}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? 'Pilih Provinsi: *' : '...'}
+        value={provinsi}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={item => {
+          setProvinsi(item.value);
+          setIsFocus(false);
+        }}
+      />
+
+
+      <Text style={styles.label}>Nomer Telepon:</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={handleNoTelp}
+        value={noTelp}
+        placeholder="08129381928"
+        keyboardType="numeric"
+        maxLength={13}
+      />
+
+      <Text style={styles.label}>Email Sekolah: *</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={setEmailSekolah}
+        value={emailSekolah}
+        placeholder="youremail@gmail.com"
+        keyboardType="email-address"
+      />
+
+      <Text style={styles.label}>Facebook:</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={setFacebook}
+        value={facebook}
+      />
+
+      <Text style={styles.label}>Jumlah Siswa: *</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={handleJumlahSiswa}
+        value={jumlahSiswa}
+        placeholder="45"
+        keyboardType="numeric"
+        maxLength={3}
+      />
+
+      <Button title="Submit" onPress={handleSubmit} />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>Tipe Sekolah: {jenisSekolah}</Text>
+          <Text style={styles.modalText}>Nama: {name}</Text>
+          <Text style={styles.modalText}>Alamat: {address}</Text>
+          <Text style={styles.modalText}>Kode Pos: {kodePos}</Text>
+          <Text style={styles.modalText}>Provinsi: {provinsi}</Text>
+          <Text style={styles.modalText}>Nomer Telepon: {noTelp}</Text>
+          <Text style={styles.modalText}>Email Sekolah: {emailSekolah}</Text>
+          <Text style={styles.modalText}>Facebook: {facebook}</Text>
+          <Text style={styles.modalText}>Jumlah Siswa: {jumlahSiswa}</Text>
+          <Button title="Close" onPress={() => setModalVisible(false)} />
+        </View>
+      </Modal>
+    </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  scrollView: {
+    marginHorizontal: 10,
+    marginTop: 10,
   },
-  stepContainer: {
-    gap: 8,
-    marginTop: 140,
+  titleForm: {
+    marginBottom: 20,
+    fontWeight: 'bold',
+
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-  text: {
-    marginTop: 12,
-    marginLeft: 12
-  },
-  button: {
-    width: 200,
-    height: 50,
-    backgroundColor: 'blue',
+  container: {
+    flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
   },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
   },
   input: {
     height: 40,
-    margin: 12,
+    borderColor: 'gray',
     borderWidth: 1,
-    padding: 10,
+    marginBottom: 20,
+    paddingLeft: 8,
   },
-  container: {
-    padding: 16,
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
   dropdown: {
     height: 50,
@@ -134,12 +270,14 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderRadius: 8,
     paddingHorizontal: 8,
+    marginBottom: 15
   },
   icon: {
     marginRight: 5,
   },
-  label: {
+  labelDrop: {
     position: 'absolute',
+    backgroundColor: 'white',
     left: 22,
     top: 8,
     zIndex: 999,
@@ -155,9 +293,5 @@ const styles = StyleSheet.create({
   iconStyle: {
     width: 20,
     height: 20,
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 16,
   },
 });
